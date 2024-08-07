@@ -1,7 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+// @ts-expect-error ignore tsc error
 import { OBridgeElement, OBridgeHistory } from '../dist/index.js'
 import { ConfigProvider, App as AntdApp, Button, Divider } from 'antd'
+// @ts-check ignore tsc error
 import '../dist/style.css'
 
 export const App = () => {
