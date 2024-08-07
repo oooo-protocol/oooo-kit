@@ -1,0 +1,67 @@
+.oooo .oooo-history {
+  padding: 16px 24px 20px;
+  border-radius: 2px;
+  border: solid 1px #cda164;
+  background-color: #fffae7;
+
+  &__title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #3a280f;
+    text-align: center;
+  }
+
+  &__table {
+    margin-top: 16px;
+
+    .ant-table-content {
+      overflow-x: auto;
+    }
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 355px;
+  }
+
+  &-date {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    color: #3a280fd9;
+    font-weight: 500;
+
+    &__time {
+      font-size: 14px;
+      font-weight: normal;
+      color: #cda164;
+    }
+  }
+
+  .ant-pagination {
+    .ant-pagination-item {
+      border-color: #e6cfaa;
+
+      a {
+        color: #63615c;
+      }
+    }
+
+    .ant-pagination-item-active a {
+      color: #fff;
+    }
+
+    .ant-pagination-prev,
+    .ant-pagination-next {
+      border-radius: 2px;
+      border: solid 1px #e6cfaa;
+    }
+
+    .ant-pagination-total-text {
+      color: #3a280f;
+    }
+  }
+}

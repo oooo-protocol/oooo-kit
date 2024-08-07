@@ -1,0 +1,13 @@
+{
+  "name": "oooo-kit",
+  "version": "@oooo-kit/monorepo",
+  "description": "",
+  "main": "index.js",
+  "private": "true",
+  "scripts": {
+    "dev:bevm": "pnpm --filter bevm run dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}

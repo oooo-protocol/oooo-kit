@@ -1,0 +1,44 @@
+.oooo-payment-detail {
+  &__tokens {
+    display: flex;
+  }
+
+  &__arrow {
+    flex-shrink: 0;
+    margin: 14px;
+    font-size: 16px;
+    color: #cda164;
+  }
+
+  &__from, &__to {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  &__token {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #3a280fd9;
+
+    > img {
+      width: 44px;
+      height: 44px;
+    }
+  }
+
+  &__status {
+    display: flex;
+    justify-content: center;
+    padding: 23px 0;
+    font-size: 50px;
+
+    &--succeed, &--failed {
+      color: #cda164;
+    }
+  }
+}

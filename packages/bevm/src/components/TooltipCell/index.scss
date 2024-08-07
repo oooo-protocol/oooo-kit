@@ -1,0 +1,20 @@
+.oooo .oooo-tooltip-cell {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+
+  + .oooo-tooltip-cell {
+    margin-top: 4px;
+  }
+
+  &__label {
+    font-size: 14px;
+    color: #867451;
+  }
+
+  &__icon {
+    margin-left: 8px;
+    font-size: 16px;
+  }
+}

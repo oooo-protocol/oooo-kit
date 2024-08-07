@@ -1,0 +1,53 @@
+.oooo-tranfer-processing-modal {
+  // fix modal is mounted out of oooo's component caused reset failed error
+  p {
+    margin: 0;
+  }
+
+  &.ant-modal .ant-modal-content {
+    padding: 0;
+  }
+
+  &__header {
+    padding: 16px 20px;
+    border-bottom: solid 0.5px #cda164;
+    font-size: 18px;
+    color: #3a280fd9;
+  }
+
+  &__content {
+    padding: 12px 20px 20px;
+  }
+
+  &__subTitle {
+    font-size: 16px;
+    font-weight: 500;
+    color: #3a280f;
+  }
+
+  &__description {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #867451;
+  }
+
+  &__image {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding-top: 26px;
+    height: 146px;
+    border-radius: 2px;
+    border: solid 1px #cda164;
+    background: url('@/assets/images/binance_instruction.png') bottom/contain no-repeat;
+    background-color: #f7e6b3;
+    background-origin: content-box;
+  }
+
+  &__button {
+    width: 100%;
+    
+    + .oooo-tranfer-processing-modal__button {
+      margin-top: 10px;
+    }
+  }
+}

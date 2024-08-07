@@ -1,0 +1,85 @@
+@import "@/styles/responsive.scss";
+
+.oooo .oooo-checkout {
+  &__header {
+    border-radius: 2px;
+    border: solid 1px #cda164;
+    background-color: #fffae7;
+  }
+
+  &__content {
+    padding: 48px 20px 30px;
+    text-align: center;
+  }
+
+  &__amount {
+    font-size: 21px;
+    font-weight: 500;
+    color: #3a280f;
+  }
+
+  &__estimate {
+    margin-top: 4px;
+    font-size: 14px;
+    color: #867451;
+  }
+
+  &__fee {
+    margin-top: 3px;
+    font-size: 14px;
+    color: #ee8a10;
+  }
+
+  &__out {
+    margin-left: 6px;
+    margin-right: 2px;
+    color: #baae9d;
+    text-decoration: line-through;
+  }
+
+  &__cells {
+    border-top: solid 1px #cda164;
+    background-color: #fdf4d3;
+    font-size: 14px;
+
+    @include md {
+      padding: 8px 0;
+    }
+  }
+
+  &-methods {
+    margin-top: 20px;
+    padding: 12px 20px 20px;
+    border-radius: 2px;
+    border: solid 1px #cda164;
+    background-color: #f7e6b3;
+
+    @include md {
+      padding: 20px;
+    }
+
+    &__title {
+      margin-bottom: 4px;
+      font-size: 18px;
+      color: #867451;
+
+      ~ .oooo-checkout-methods__title {
+        margin-top: 24px;
+
+        @include md {
+          margin-top: 16px;
+        }
+      }
+    }
+
+    &__content {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(226px, auto));
+      gap: 9px;
+    }
+  }
+
+  &__submit {
+    margin-top: 20px;
+  }
+}

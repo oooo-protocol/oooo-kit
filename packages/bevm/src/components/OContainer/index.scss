@@ -1,0 +1,32 @@
+.oooo .oooo-footer {
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+
+  &__text {
+    font-size: 14px;
+    color: #313030;
+  }
+
+  &__logo {
+    margin-left: 4px;
+    width: 53px;
+    height: 18px;
+  }
+}
+
+.oooo .oooo-container {
+  position: relative;
+
+  &__back {
+    z-index: 99;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 14px;
+    color: #867451;
+    cursor: pointer;
+  }
+}

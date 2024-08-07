@@ -1,0 +1,126 @@
+.oooo-binance-pay {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 2px;
+  border: solid 1px #cda164;
+  background-color: #fdf4d3;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__logo {
+    height: 28px;
+  }
+
+  &__expire {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    color: #867451;
+  }
+
+  &__time {
+    margin-left: 4px;
+    &.ant-statistic .ant-statistic-content {
+      color: #3a280f;
+      font-size: 12px;
+    }
+  }
+
+  &__content {
+    margin: auto;
+    padding: 20px 0 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 265px;
+  }
+
+  &__qrcode {
+    height: 170px;
+    width: 170px;
+  }
+
+  &__hint {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #867451;
+  }
+
+  &__issue {
+    margin-left: 4px;
+    font-size: 14px;
+    color: #a4a4a4;
+  }
+
+  &__image {
+    width: 100%;
+  }
+
+  &__divider {
+    margin: 16px 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    font-size: 12px;
+    color: #cda164;
+
+    &::before,
+    &::after {
+      flex: 1;
+      content: "";
+      height: 1px;
+      background-color: #cda164;
+    }
+  }
+
+  &__button {
+    width: 100%;
+    height: 40px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #000;
+    border-radius: 2px;
+    background-color: #fccc0a;
+
+    &:hover {
+      background-color: #fccc0a;
+      color: #000;
+    }
+
+    + .oooo-binance-pay__button {
+      margin-top: 10px;
+    }
+  }
+
+  &__unabled {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #867451;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  &__submit {
+    margin-top: 20px;
+    height: 53px;
+  }
+
+  &__tooltip {
+    margin: -6px -8px;
+
+    > p {
+      margin: 0;
+      padding: 8px 8px 16px;
+    }
+  }
+}
+
+// fix colorError set not work in ConfigProvider error
+.ant-notification-notice-icon-error {
+  color: rgb(212, 87, 59);
+}
