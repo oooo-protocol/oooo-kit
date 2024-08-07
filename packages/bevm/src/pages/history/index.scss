@@ -14,7 +14,7 @@
   &__table {
     margin-top: 16px;
 
-    .ant-table-content {
+    .oooo-table-content {
       overflow-x: auto;
     }
   }
@@ -41,8 +41,8 @@
     }
   }
 
-  .ant-pagination {
-    .ant-pagination-item {
+  .oooo-pagination {
+    .oooo-pagination-item {
       border-color: #e6cfaa;
 
       a {
@@ -50,17 +50,17 @@
       }
     }
 
-    .ant-pagination-item-active a {
+    .oooo-pagination-item-active a {
       color: #fff;
     }
 
-    .ant-pagination-prev,
-    .ant-pagination-next {
+    .oooo-pagination-prev,
+    .oooo-pagination-next {
       border-radius: 2px;
       border: solid 1px #e6cfaa;
     }
 
-    .ant-pagination-total-text {
+    .oooo-pagination-total-text {
       color: #3a280f;
     }
   }

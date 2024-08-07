@@ -48,6 +48,7 @@ export const AntdConfigProvider: React.FC<ConfigProviderProps> = ({
           }
         }
       }}
+      prefixCls="oooo"
       {...props}
     >
       <StyleProvider layer>

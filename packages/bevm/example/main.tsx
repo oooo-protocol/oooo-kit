@@ -1,7 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { OBridgeElement, OBridgeHistory } from '@/index.tsx'
+import { OBridgeElement, OBridgeHistory } from '../dist/index.js'
 import { ConfigProvider, App as AntdApp, Button, Divider } from 'antd'
+import '../dist/style.css'
 
 export const App = () => {
   const [account, setAccount] = useState()
