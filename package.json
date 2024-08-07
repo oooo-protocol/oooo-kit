@@ -6,7 +6,7 @@
   "private": "true",
   "scripts": {
     "dev:bevm": "pnpm --filter bevm run dev",
-    "build": "pnpm --filter bevm run build",
+    "build": "pnpm -r run build",
     "ci:version": "pnpm changeset version && pnpm install --lockfile-only",
     "ci:publish": "pnpm build && pnpm changeset publish",
     "prepare": "husky"
