@@ -1,13 +1,28 @@
 {
-  "name": "oooo-kit",
-  "version": "@oooo-kit/monorepo",
-  "description": "",
+  "name": "@oooo-kit/monorepo",
+  "version": "0.0.1",
+  "description": "A monorepo for oooo-kit",
   "main": "index.js",
   "private": "true",
   "scripts": {
-    "dev:bevm": "pnpm --filter bevm run dev"
+    "dev:bevm": "pnpm --filter bevm run dev",
+    "build": "pnpm --filter bevm run build",
+    "ci:version": "pnpm changeset version && pnpm install --lockfile-only",
+    "ci:publish": "pnpm build && pnpm changeset publish",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@changesets/cli": "^2.27.7",
+    "@commitlint/cli": "^16.3.0",
+    "@commitlint/config-conventional": "^16.2.4",
+    "husky": "^9.1.4"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  }
 }

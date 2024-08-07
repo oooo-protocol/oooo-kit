@@ -3,6 +3,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import AutoImport from 'unplugin-auto-import/vite'
 import { visualizer } from 'rollup-plugin-visualizer'
+import dts from 'vite-plugin-dts'
 
 // https://vitejs.dev/config/
 export default defineConfig(() => {
@@ -25,6 +26,7 @@ export default defineConfig(() => {
           enabled: true // Default `false`
         }
       }),
+      dts({ rollupTypes: true }),
       isAnalyze
         ? visualizer({
           filename: path.resolve(__dirname, 'node_modules/rollup-plugin-visualizer/stats.html'),
