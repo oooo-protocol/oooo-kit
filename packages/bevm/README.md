@@ -16,6 +16,13 @@ $ pnpm install @oooo-kit/bevm
 
 ### 2. 初始化
 
+
+#### 样式初始化
+
+```ts
+import '@oooo-kit/bevm/style.css'
+```
+
 #### OBridgeElement
 
 ```tsx
