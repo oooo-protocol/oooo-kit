@@ -1,5 +1,11 @@
 # @oooo-kit/bevm
 
+## 0.1.2
+
+### Patch Changes
+
+- e247302: fix typo
+
 ## 0.1.1
 
 ### Patch Changes
