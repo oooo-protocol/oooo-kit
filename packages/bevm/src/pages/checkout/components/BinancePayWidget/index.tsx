@@ -141,7 +141,7 @@ export const BinancePayWidget: React.FC<BinancePayWidgetProps> = ({ isSharing, .
             Continue on Browser
           </Button>
           <p className='oooo-binance-pay__unabled' onClick={onClickUnable}>
-          Unable to Complete Pyment
+          Unable to Complete Payment
           </p>
         </div>
       </div>

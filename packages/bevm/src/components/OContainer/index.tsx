@@ -25,7 +25,7 @@ export const OContainer: React.FC<OContainerProps> = ({
         : null}
       {children}
       <div className='oooo-footer'>
-        <p className='oooo-footer__text'>Gas service is provided by</p>
+        <p className='oooo-footer__text'>Provided by</p>
         <Icon className='oooo-footer__logo' name='logo' />
       </div>
     </div>
