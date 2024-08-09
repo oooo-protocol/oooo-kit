@@ -1,5 +1,11 @@
 # @oooo-kit/bevm
 
+## 0.2.0
+
+### Minor Changes
+
+- 2ae8f09: add showMessageAlert option and onSuccess/onFailed callback
+
 ## 0.1.2
 
 ### Patch Changes
