@@ -77,9 +77,10 @@ export default () => {
 
 **Options**
 
-| Prop | Description |
-| --- | --- |
-| appId | 指定业务方的appId |
+| Prop             | Description       |
+| ---------------- | ----------------- |
+| appId            | 指定业务方的appId |
+| showMessageAlert | 指定是否使用@oooo-kit消息弹窗展示失败信息 |
 
 **Events**
 
