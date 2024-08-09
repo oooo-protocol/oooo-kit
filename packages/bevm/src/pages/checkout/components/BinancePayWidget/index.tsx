@@ -11,6 +11,10 @@ import BinanceScanImage from '@/assets/images/binance_scan.png'
 import { BinancePayUnableModal } from '../BinancePayUnableModal'
 import { useClipboard } from '@/composables/hooks/use-clipboard'
 import './index.scss'
+import { useOConfig } from '@/composables/oooo-config'
+import { type EthersError } from 'ethers'
+import { formatEtherError } from '@/composables/utils'
+import { OBridgeError } from '@/entities/error'
 
 const { Countdown } = Statistic
 
@@ -28,6 +32,7 @@ export const BinancePayWidget: React.FC<BinancePayWidgetProps> = ({ isSharing, .
   const navigate = useNavigate()
   const { copy } = useClipboard()
   const { message, notification } = App.useApp()
+  const { walletAddress, options: { appId, showMessageAlert }, onFailed: OBridgeFailed, onSuccess: OBridgeSuccess } = useOConfig()
   const { isValidating, mutate, data: transaction } = useSWR(
     props != null ? ['/v1/bridge/transaction/detail', props] : null,
     async ([_, props]) => await retrieveTransactionDetail(props),
@@ -36,29 +41,44 @@ export const BinancePayWidget: React.FC<BinancePayWidgetProps> = ({ isSharing, .
         if (transaction == null || transaction.fromStatus === TRANSACTION_STATUS.PROCESSING || transaction.fromStatus === TRANSACTION_STATUS.PENDING) {
           return 3000
         }
+        return 0
+      },
+      onSuccess (transaction) {
         if (transaction.fromStatus === TRANSACTION_STATUS.SUCCEED) {
           void onSucceed(transaction)
         }
         if (transaction.fromStatus === TRANSACTION_STATUS.TIMEOUT) {
           onTimeEnd()
         }
-        return 0
       },
       revalidateOnFocus: false
     }
   )
 
   const onSucceed = async (transaction: Transaction) => {
-    await NiceModal.show(PaymentDetailModal, {
-      fromChain: transaction.fromChainName,
-      fromTxnHash: transaction.fromTxnHash,
-      fromAssetIcon: props.fromAssetIcon,
-      fromAssetType: transaction.fromAssetType,
-      fromAssetCode: transaction.fromAssetCode,
-      onSucceed () {
-        navigate(-1)
+    try {
+      const tx = await NiceModal.show(PaymentDetailModal, {
+        fromChain: transaction.fromChainName,
+        fromTxnHash: transaction.fromTxnHash,
+        fromAssetIcon: props.fromAssetIcon,
+        fromAssetType: transaction.fromAssetType,
+        fromAssetCode: transaction.fromAssetCode,
+        fromWalletAddr: walletAddress!,
+        merchantNo: appId,
+        onSuccessClose () {
+          navigate(-1)
+        }
+      })
+      OBridgeSuccess?.(tx as Transaction)
+    } catch (e) {
+      const error = e as EthersError
+      const formatedError = formatEtherError(e as EthersError) as Error
+      OBridgeFailed?.(new OBridgeError(formatedError.message, error))
+      if (showMessageAlert) {
+        void message.open({ type: 'error', content: formatedError.message })
       }
-    })
+      throw e
+    }
   }
 
   const onClickUnable = async () => {

@@ -85,8 +85,35 @@ export default () => {
 
 | Name | Description | Argument |
 | --- | --- | --- |
-| onSucceed | 用户创建交易单成功后触发 | { txnHash: string } |
-| onFailed | 用户创建交易单失败后触发 | Error |
+| onSucceed | 用户创建交易单成功后触发 | Transaction |
+| onFailed | 用户创建交易单失败后触发 | OBridgeError |
+
+**Transaction**
+| Name            | Description            |
+| --------------- | ---------------------- |
+| createTime      | 交易单创建时间         |
+| fromChainName   | 用户发起转账的链名称   |
+| fromAssetType   | 用户发起转账的资产类型 |
+| fromAssetCode   | 用户发起转账的资产     |
+| fromWalletAddr  | 用户发起转账钱包地址   |
+| fromTxnHash     | 用户发起转账的交易hash |
+| fromSwapAmount  | 用户发起转账金额       |
+| fromStatus      | 用户发起转账订单状态   |
+| toChainName     | 目的链名称             |
+| toAssetType     | 目的资产类型           |
+| toAssetCode     | 目的资产               |
+| toWalletAddr    | 目的收款钱包地址       |
+| toSwapAmount    | 目的收款金额           |
+| toTxnHash       | 目的交易hash           |
+| toStatus        | 目的订单状态           |
+| binancePayOrder | Binance Pay订单信息 |
+
+**OBridgeError**
+| Name | Description    |
+| ---- | -------------- |
+| code | 错误码, 基于[EthersError](https://docs.ethers.org/v6/api/utils/errors/)上新增了`O_RESPONSE_ERROR`错误码管理@oooo-kit内部的接口请求错误 |
+| message | 由@oooo-kit处理过的错误信息 |
+| rawError | 原始的, 未被处理过的错误数据 |
 
 ### OBridgeHistory
 

@@ -11,3 +11,6 @@ export function OBridgeHistory (props: AppProps) {
     <App {...props} initialEntries={['/history']} />
   )
 }
+
+export type { Transaction } from '@/entities/server'
+export type { OBridgeError } from '@/entities/error'

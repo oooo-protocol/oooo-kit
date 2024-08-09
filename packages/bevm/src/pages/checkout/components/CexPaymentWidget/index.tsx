@@ -7,6 +7,7 @@ import { useOConfig } from '@/composables/oooo-config'
 import { formatEtherError } from '@/composables/utils'
 import { type EthersError } from 'ethers'
 import { BinancePayWidget, type BinancePayWidgetProps } from '../BinancePayWidget'
+import { OBridgeError } from '@/entities/error'
 
 export interface CexPaymentWidgetRef {
   create: (data: PaymentParameter) => Promise<void>
@@ -14,7 +15,7 @@ export interface CexPaymentWidgetRef {
 }
 
 export const CexPaymentWidget = forwardRef<CexPaymentWidgetRef>((_, ref) => {
-  const { walletAddress, options: { appId } } = useOConfig()
+  const { walletAddress, options: { appId, showMessageAlert }, onFailed: OBridgeFailed } = useOConfig()
   const { sign } = useWallet()
   const [parameter, setParameter] = useState<BinancePayWidgetProps>()
   const { message } = App.useApp()
@@ -54,11 +55,15 @@ export const CexPaymentWidget = forwardRef<CexPaymentWidgetRef>((_, ref) => {
         fromWalletAddr: transaction.fromWalletAddr
       })
     } catch (e) {
-      const error = formatEtherError(e as EthersError)
-      void message.open({ type: 'error', content: error.message })
+      const error = e as EthersError
+      const formatedError = formatEtherError(e as EthersError) as Error
+      OBridgeFailed?.(new OBridgeError(formatedError.message, error))
+      if (showMessageAlert) {
+        void message.open({ type: 'error', content: formatedError.message })
+      }
       throw e
     }
-  }, [appId, message, sign, walletAddress])
+  }, [OBridgeFailed, appId, message, showMessageAlert, sign, walletAddress])
 
   useImperativeHandle(ref, () => ({
     create,

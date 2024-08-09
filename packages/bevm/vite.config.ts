@@ -26,7 +26,7 @@ export default defineConfig(() => {
           enabled: true // Default `false`
         }
       }),
-      dts({ rollupTypes: true }),
+      isExample ? null : dts({ rollupTypes: true }),
       isAnalyze
         ? visualizer({
           filename: path.resolve(__dirname, 'node_modules/rollup-plugin-visualizer/stats.html'),

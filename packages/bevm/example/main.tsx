@@ -1,11 +1,19 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { OBridgeElement, OBridgeHistory } from '@/index'
-import { ConfigProvider, App as AntdApp, Button, Divider } from 'antd'
+import { ConfigProvider, App as AntdApp, Button, Divider, Checkbox } from 'antd'
+import { OBridgeElement, type OBridgeError, OBridgeHistory, type Transaction } from '@/index'
+
+// import { OBridgeElement, type OBridgeError, OBridgeHistory, type Transaction } from '../dist/index'
+// import '../dist/style.css'
 
 export const App = () => {
   const [account, setAccount] = useState()
   const [loading, setLoading] = useState(false)
+  const [checked, setChecked] = useState(false)
+  const options = useMemo(() => ({
+    appId: 'BevmBridge',
+    showMessageAlert: checked
+  }), [checked])
 
   const onConnect = async () => {
     try {
@@ -20,9 +28,19 @@ export const App = () => {
     }
   }
 
+  const onBridgeSuccess = (transaction: Transaction) => {
+    console.log('onSuccess', transaction)
+  }
+
+  const onBridgeFailed = (e: OBridgeError) => {
+    console.log('onFailed', e)
+  }
+
   return (
     <>
       <Button loading={loading} onClick={onConnect}>Connect</Button>
+      <h2>Options</h2>
+      <Checkbox checked={checked} onChange={(e) => { setChecked(e.target.checked) }}>showMessageAlert</Checkbox>
       <Divider />
       <h2>OBridgeElement</h2>
       <Divider />
@@ -30,7 +48,9 @@ export const App = () => {
         walletAddress={account}
         // @ts-expect-error 临时测试写死
         provider={window.ethereum}
-        options={{ appId: 'BevmBridge' }}
+        options={options}
+        onSuccess={onBridgeSuccess}
+        onFailed={onBridgeFailed}
       />
       <h2>OBridgeHistory</h2>
       <Divider />
@@ -38,7 +58,9 @@ export const App = () => {
         walletAddress={account}
         // @ts-expect-error 临时测试写死
         provider={window.ethereum}
-        options={{ appId: 'BevmBridge' }}
+        options={options}
+        onSuccess={onBridgeSuccess}
+        onFailed={onBridgeFailed}
       />
     </>
   )

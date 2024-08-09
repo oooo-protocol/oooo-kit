@@ -1,11 +1,9 @@
-import { useOConfig } from '@/composables/oooo-config'
 import { TRANSACTION_DETAIL_STATUS } from '@/entities/transaction'
 import useSWR from 'swr'
 import { retrieveSwapConfigs, retrieveTransactionDetail } from '@/request/api/swap'
 import { type Transaction, TRANSACTION_STATUS } from '@/entities/server'
 import { Icon, OSpin, OSpinPlaceholder, TransactionStatus } from '@/components'
-import BEVM_IMAGE from '@/assets/images/bevm.png'
-import { combineURLs } from '@/composables/utils'
+import { combineURLs, isCexChain } from '@/composables/utils'
 import './index.scss'
 import { TransferProcessingModal } from '../TransferProcessingModal'
 import NiceModal, { useModal } from '@ebay/nice-modal-react'
@@ -44,16 +42,16 @@ interface ChainPaymentDetailProps {
   fromAssetIcon: string
   fromAssetType: string
   fromAssetCode: string
-  onSucceed?: () => void
+  fromWalletAddr: string
+  merchantNo: string
+  onSucceed?: (transaction: Transaction) => void
+  onFailed?: (e: Error) => void
 }
 
-export const PaymentDetail: React.FC<ChainPaymentDetailProps> = ({ onSucceed, ...props }) => {
-  const { walletAddress, options: { appId } } = useOConfig()
-  const [status, setStatus] = useState(TRANSACTION_DETAIL_STATUS.PENDING)
-
+export const PaymentDetail: React.FC<ChainPaymentDetailProps> = ({ onSucceed, onFailed, merchantNo, ...props }) => {
   const { data: configs } = useSWR(
     ['/v1/bridge/global/configuration'],
-    async () => await retrieveSwapConfigs({ merchantNo: appId })
+    async () => await retrieveSwapConfigs({ merchantNo })
   )
   const CHAIN_MAP = useMemo(() => configs ? defineMap(configs.chainList, 'chainName', ['icon', 'blockExplorerUrls']) : {}, [configs])
 
@@ -64,39 +62,36 @@ export const PaymentDetail: React.FC<ChainPaymentDetailProps> = ({ onSucceed, ..
     return combineURLs(chain.blockExplorerUrls[0], `/tx/${txnHash}`)
   }
 
-  if (walletAddress == null) {
-    throw new Error('[@oooo-kit/bevm]: Wallet Address is empty')
-  }
-
   const { data } = useSWR(
     ['/v1/bridge/transaction/detail', props],
-    async ([_, props]) => await retrieveTransactionDetail({ ...props, fromWalletAddr: walletAddress }),
+    async ([_, props]) => await retrieveTransactionDetail(props),
     {
       refreshInterval: (transaction) => {
         const currentStatus = getTransactionDetailStatus(transaction)
-        /**
-         * No change if server status later than local status
-         */
-        if (currentStatus > status) {
-          setStatus(currentStatus)
-        }
         /**
          * FROM_CONFIRMED_ON_CHAIN, TO_WAIT_DELIVERED, TO_CONFIRMED_ON_CHAIN
          * Polling be trigger if server return above status
          */
         if (
-          status === TRANSACTION_DETAIL_STATUS.PENDING
+          currentStatus === TRANSACTION_DETAIL_STATUS.PENDING
         ) {
           return 3000
         }
-        if (status === TRANSACTION_DETAIL_STATUS.COMPLETE) {
-          onSucceed?.()
-        }
         return 0
+      },
+      onSuccess (transaction) {
+        const currentStatus = getTransactionDetailStatus(transaction)
+        if (currentStatus === TRANSACTION_DETAIL_STATUS.COMPLETE) {
+          onSucceed?.(transaction)
+        }
+        if (currentStatus === TRANSACTION_DETAIL_STATUS.FAILED) {
+          onFailed?.(new Error('Transaction failed, please contact to deal with it.'))
+        }
       },
       revalidateOnFocus: false
     }
   )
+  const status = useMemo(() => getTransactionDetailStatus(data), [data])
 
   const DetailStatusIcon = () => {
     if (status === TRANSACTION_DETAIL_STATUS.PENDING) {
@@ -125,12 +120,12 @@ export const PaymentDetail: React.FC<ChainPaymentDetailProps> = ({ onSucceed, ..
             <img src={props.fromAssetIcon} />
             {Number(data.fromSwapAmount)} {data.fromAssetCode}
           </div>
-          <TransactionStatus status={data.fromStatus} hash={data.fromTxnHash} href={getTransactionChainHref(data.fromChainName, data.fromTxnHash)} />
+          <TransactionStatus status={data.fromStatus} hash={isCexChain(data.fromChainName) ? undefined : data.fromTxnHash} href={getTransactionChainHref(data.fromChainName, data.fromTxnHash)} />
         </div>
         <Icon className='oooo-payment-detail__arrow' name='to' />
         <div className='oooo-payment-detail__to'>
           <div className='oooo-payment-detail__token'>
-            <img src={BEVM_IMAGE} />
+            <img src='https://oooo.money/static/images/btc.png' />
             {Number(data.toSwapAmount)} {data.toAssetCode}
           </div>
           {data.toTxnHash != null && data.toTxnHash !== ''
@@ -148,13 +143,9 @@ export const PaymentDetail: React.FC<ChainPaymentDetailProps> = ({ onSucceed, ..
   )
 }
 
-export const PaymentDetailModal = NiceModal.create<ChainPaymentDetailProps>(({
-  fromChain,
-  fromTxnHash,
-  fromAssetIcon,
-  fromAssetType,
-  fromAssetCode,
-  onSucceed
+export const PaymentDetailModal = NiceModal.create<ChainPaymentDetailProps & { onSuccessClose?: () => void }>(({
+  onSuccessClose,
+  ...props
 }) => {
   const modal = useModal()
   const [isSucceed, setSucceed] = useState(false)
@@ -162,19 +153,25 @@ export const PaymentDetailModal = NiceModal.create<ChainPaymentDetailProps>(({
   const onCancel = async () => {
     void modal.hide()
     if (isSucceed) {
-      onSucceed?.()
+      onSuccessClose?.()
     }
+  }
+
+  const onSucceed = (transaction: Transaction) => {
+    setSucceed(true)
+    modal.resolve(transaction)
+  }
+
+  const onFailed = (e: Error) => {
+    modal.reject(e)
   }
 
   return (
     <TransferProcessingModal open={modal.visible} onCancel={onCancel} afterClose={modal.remove}>
       <PaymentDetail
-        fromChain={fromChain}
-        fromTxnHash={fromTxnHash}
-        fromAssetIcon={fromAssetIcon}
-        fromAssetType={fromAssetType}
-        fromAssetCode={fromAssetCode}
-        onSucceed={() => { setSucceed(true) }}
+        onSucceed={onSucceed}
+        onFailed={onFailed}
+        {...props}
       />
     </TransferProcessingModal>
   )

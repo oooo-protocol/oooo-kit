@@ -1,18 +1,18 @@
 import { useWallet } from '@/composables/hooks/use-wallet'
 import { useOConfig } from '@/composables/oooo-config'
-import { SERVER_ASSET } from '@/entities/server'
+import { SERVER_ASSET, type Transaction } from '@/entities/server'
 import { createTransaction, retrieveTransactionConfig, type createTransactionParameter } from '@/request/api/swap'
 import classNames from 'classnames'
 import { type PaymentParameter } from '../PaymentWidget'
 import './index.scss'
 import { TransferProcessingModal } from '../TransferProcessingModal'
 import { Icon } from '@/components'
-import BEVM_IMAGE from '@/assets/images/bevm.png'
 import { App } from 'antd'
 import { type EthersError } from 'ethers'
 import { formatEtherError } from '@/composables/utils'
 import { PaymentDetailModal } from '../PaymentDetailModal'
 import NiceModal, { useModal } from '@ebay/nice-modal-react'
+import { OBridgeError } from '@/entities/error'
 
 export interface ChainPaymentWidgetRef {
   create: (data: PaymentParameter) => Promise<void>
@@ -32,12 +32,12 @@ export const ChainPayingModal = NiceModal.create<{ paymentInfo: PaymentParameter
     >
       <div className='oooo-chain-payment-widget__tokens'>
         <div className='oooo-chain-payment-widget__token'>
-          <img className='' src={paymentInfo.fromAssetIcon} />
+          <img src={paymentInfo.fromAssetIcon} />
           {paymentInfo.amount} {paymentInfo.fromAssetCode}
         </div>
         <Icon className='oooo-chain-payment-widget__to' name='to' />
         <div className='oooo-chain-payment-widget__token'>
-          <img className='' src={BEVM_IMAGE} />
+          <img src='https://oooo.money/static/images/btc.png' />
           {paymentInfo.toAmount} {paymentInfo.toAssetCode}
         </div>
       </div>
@@ -53,7 +53,7 @@ export const ChainPayingModal = NiceModal.create<{ paymentInfo: PaymentParameter
 })
 
 export const ChainPaymentWidget = forwardRef<ChainPaymentWidgetRef>((_, ref) => {
-  const { walletAddress, options: { appId } } = useOConfig()
+  const { walletAddress, options: { appId, showMessageAlert }, onFailed: OBridgeFailed, onSuccess: OBridgeSuccess } = useOConfig()
   const { sign, switchToChain, transfer, getBalance } = useWallet()
   const { message } = App.useApp()
   const navigate = useNavigate()
@@ -123,24 +123,32 @@ export const ChainPaymentWidget = forwardRef<ChainPaymentWidgetRef>((_, ref) => 
         ...parameter,
         txnHash: hash
       })
-      void NiceModal.show(PaymentDetailModal, {
+      void chainPayingModal.hide()
+      const tx = await NiceModal.show(PaymentDetailModal, {
         fromChain: transaction.fromChainName,
         fromTxnHash: transaction.fromTxnHash,
         fromAssetIcon,
         fromAssetType: transaction.fromAssetType,
         fromAssetCode: transaction.fromAssetCode,
-        onSucceed () {
+        fromWalletAddr: walletAddress,
+        merchantNo: appId,
+        onSuccessClose () {
           navigate(-1)
         }
       })
+      OBridgeSuccess?.(tx as Transaction)
     } catch (e) {
-      const error = formatEtherError(e as EthersError)
-      void message.open({ type: 'error', content: error.message })
+      const error = e as EthersError
+      const formatedError = formatEtherError(e as EthersError) as Error
+      OBridgeFailed?.(new OBridgeError(formatedError.message, error))
+      if (showMessageAlert) {
+        void message.open({ type: 'error', content: formatedError.message })
+      }
       throw e
     } finally {
       void chainPayingModal.hide()
     }
-  }, [appId, chainPayingModal, getBalance, message, navigate, sign, switchToChain, transfer, walletAddress])
+  }, [OBridgeFailed, OBridgeSuccess, appId, chainPayingModal, getBalance, message, navigate, showMessageAlert, sign, switchToChain, transfer, walletAddress])
 
   useImperativeHandle(ref, () => ({
     create

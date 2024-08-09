@@ -10,7 +10,6 @@ import { TRANSACTION_STATUS, type Transaction } from '@/entities/server'
 import { TRANSACTION_DETAIL_STATUS } from '@/entities/transaction'
 import { SwapCell } from './components/SwapCell'
 import dayjs from 'dayjs'
-import BEVM_IMAGE from '@/assets/images/bevm.png'
 import { retrieveSwapConfigs } from '@/request/api/swap'
 import { defineMap } from '@preflower/utils'
 import { combineURLs, isCexChain } from '@/composables/utils'
@@ -78,7 +77,8 @@ function History () {
           amount={Number(transaction.toSwapAmount)}
           assetCode={transaction.toAssetCode}
           status={transaction.toStatus}
-          image={BEVM_IMAGE}
+          image='https://oooo.money/static/images/btc.png'
+          subImage='https://oooo.money/static/images/bevm.png'
           txnHash={transaction.toTxnHash}
           href={getTransactionChainHref(transaction.toChainName, transaction.toTxnHash)}
         />
