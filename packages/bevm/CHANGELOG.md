@@ -1,5 +1,11 @@
 # @oooo-kit/bevm
 
+## 0.2.1
+
+### Patch Changes
+
+- 8097fab: fix wallet address empty cause component crash error
+
 ## 0.2.0
 
 ### Minor Changes
