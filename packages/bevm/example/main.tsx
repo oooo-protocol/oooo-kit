@@ -28,6 +28,10 @@ export const App = () => {
     }
   }
 
+  const onDisconnect = () => {
+    setAccount(undefined)
+  }
+
   const onBridgeSuccess = (transaction: Transaction) => {
     console.log('onSuccess', transaction)
   }
@@ -39,6 +43,8 @@ export const App = () => {
   return (
     <>
       <Button loading={loading} onClick={onConnect}>Connect</Button>
+      {' '}
+      <Button loading={loading} onClick={onDisconnect}>Disconnect</Button>
       <h2>Options</h2>
       <Checkbox checked={checked} onChange={(e) => { setChecked(e.target.checked) }}>showMessageAlert</Checkbox>
       <Divider />

@@ -9,6 +9,7 @@ import { PairItem } from './components/PairItem'
 import { CHAIN } from '@/composables/constants'
 import { PaymentWidget, type PaymentWidgetRef } from './components/PaymentWidget'
 import { useOConfig } from '@/composables/oooo-config'
+import { Navigate } from 'react-router-dom'
 
 interface LocationState {
   amount: string
@@ -21,10 +22,6 @@ function CheckoutPage () {
 
   if (state.config == null) {
     throw new Error('[@oooo-kit/bevm]: Config is not passed on correctly')
-  }
-
-  if (walletAddress == null) {
-    throw new Error('[@oooo-kit/bevm]: Wallet Address is empty')
   }
 
   const { config, amount } = state
@@ -65,6 +62,10 @@ function CheckoutPage () {
       amount,
       toAmount: estimate!.toAmount
     })
+  }
+
+  if (walletAddress == null) {
+    return <Navigate to="/" replace />
   }
 
   return (

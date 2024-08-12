@@ -13,6 +13,7 @@ import { formatEtherError } from '@/composables/utils'
 import { PaymentDetailModal } from '../PaymentDetailModal'
 import NiceModal, { useModal } from '@ebay/nice-modal-react'
 import { OBridgeError } from '@/entities/error'
+import { Navigate } from 'react-router-dom'
 
 export interface ChainPaymentWidgetRef {
   create: (data: PaymentParameter) => Promise<void>
@@ -59,10 +60,6 @@ export const ChainPaymentWidget = forwardRef<ChainPaymentWidgetRef>((_, ref) => 
   const navigate = useNavigate()
   const chainPayingModal = useModal(ChainPayingModal)
 
-  if (walletAddress == null) {
-    throw new Error('[@oooo-kit/bevm]: Wallet Address is empty')
-  }
-
   const create = useCallback(async (data: PaymentParameter) => {
     try {
       void chainPayingModal.show({
@@ -75,7 +72,7 @@ export const ChainPaymentWidget = forwardRef<ChainPaymentWidgetRef>((_, ref) => 
 
       await switchToChain(chainConfig)
 
-      const balance = await getBalance(walletAddress, chainConfig, contractAddress)
+      const balance = await getBalance(walletAddress!, chainConfig, contractAddress)
 
       if (Number(balance) < Number(data.amount)) {
         throw new Error('INSUFFICIENT FUNDS')
@@ -90,11 +87,11 @@ export const ChainPaymentWidget = forwardRef<ChainPaymentWidgetRef>((_, ref) => 
       const signature = await sign(signContent)
       const parameter: createTransactionParameter = {
         ...params,
-        fromAddress: walletAddress,
+        fromAddress: walletAddress!,
         toAddress: walletAddress,
         signContent,
         signature,
-        publicKey: walletAddress,
+        publicKey: walletAddress!,
         merchantNo: appId
       }
 
@@ -153,6 +150,10 @@ export const ChainPaymentWidget = forwardRef<ChainPaymentWidgetRef>((_, ref) => 
   useImperativeHandle(ref, () => ({
     create
   }), [create])
+
+  if (walletAddress == null) {
+    return <Navigate to="/" replace />
+  }
 
   return null
 })

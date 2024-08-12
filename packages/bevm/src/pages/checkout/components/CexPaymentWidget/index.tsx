@@ -8,6 +8,7 @@ import { formatEtherError } from '@/composables/utils'
 import { type EthersError } from 'ethers'
 import { BinancePayWidget, type BinancePayWidgetProps } from '../BinancePayWidget'
 import { OBridgeError } from '@/entities/error'
+import { Navigate } from 'react-router-dom'
 
 export interface CexPaymentWidgetRef {
   create: (data: PaymentParameter) => Promise<void>
@@ -19,10 +20,6 @@ export const CexPaymentWidget = forwardRef<CexPaymentWidgetRef>((_, ref) => {
   const { sign } = useWallet()
   const [parameter, setParameter] = useState<BinancePayWidgetProps>()
   const { message } = App.useApp()
-
-  if (walletAddress == null) {
-    throw new Error('[@oooo-kit/bevm]: Wallet Address is empty')
-  }
 
   const create = useCallback(async (data: PaymentParameter) => {
     try {
@@ -37,11 +34,11 @@ export const CexPaymentWidget = forwardRef<CexPaymentWidgetRef>((_, ref) => {
       const signature = await sign(signContent)
       const parameter: createTransactionParameter = {
         ...params,
-        fromAddress: walletAddress,
+        fromAddress: walletAddress!,
         toAddress: walletAddress,
         signContent,
         signature,
-        publicKey: walletAddress,
+        publicKey: walletAddress!,
         merchantNo: appId
       }
 
@@ -71,6 +68,10 @@ export const CexPaymentWidget = forwardRef<CexPaymentWidgetRef>((_, ref) => {
       setParameter(undefined)
     }
   }), [create])
+
+  if (walletAddress == null) {
+    return <Navigate to="/" replace />
+  }
 
   if (parameter == null) return
 
